@@ -1,4 +1,4 @@
-# flutter_weather_with_bloc
+# flutter_weather_project_with_bloc
 
 A new Flutter project.
 
