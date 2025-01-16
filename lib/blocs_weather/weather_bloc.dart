@@ -12,16 +12,29 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
   WeatherBloc() : super(WeatherInitial()) {
     on<FetchWeatherEvent>(_onFetchWeather);
+    on<RefreshWeatherEvent>(_onRefreshWeather);
   }
 
   Future<void> _onFetchWeather(
       FetchWeatherEvent event, Emitter<WeatherState> emit) async {
-    emit(WeatherLoadingState()); // Yükleme durumunu yayıyoruz
+    emit(WeatherLoadingState());
     try {
-      final  receivedWeather = await weatherRepository.getWeather(event.cityName);
-      emit(WeatherLoadedState(weatherModel: receivedWeather)); // Yüklenen durumu yayıyoruz
+      final receivedWeather = await weatherRepository.getWeather(event.cityName);
+      emit(WeatherLoadedState(weatherModel: receivedWeather));
     } catch (e) {
-      emit(WeatherErrorState()); // Hata durumunu yayıyoruz
+      print('Error in _onFetchWeather: $e');
+      emit(WeatherErrorState(errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _onRefreshWeather(
+      RefreshWeatherEvent event, Emitter<WeatherState> emit) async {
+    try {
+      final receivedWeather = await weatherRepository.getWeather(event.cityName);
+      emit(WeatherLoadedState(weatherModel: receivedWeather));
+    } catch (e) {
+      print('Error in _onRefreshWeather: $e');
+      emit(WeatherErrorState(errorMessage: e.toString()));
     }
   }
 }

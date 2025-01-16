@@ -1,181 +1,209 @@
 import 'dart:convert';
 
-WeatherModel weatherFromJson(String str) =>
+WeatherModel weatherModelFromJson(String str) =>
     WeatherModel.fromJson(json.decode(str));
 
-String weatherToJson(WeatherModel data) => json.encode(data.toJson());
+String weatherModelToJson(WeatherModel data) => json.encode(data.toJson());
 
 class WeatherModel {
-  final List<ConsolidatedWeather> consolidatedWeather;
-  final DateTime time;
-  final DateTime sunRise;
-  final DateTime sunSet;
-  final String timezoneName;
-  final Parent parent;
-  final List<dynamic> sources;
-  final String title;
-  final String locationType;
-  final int woeid;
-  final String lattLong;
-  final String timezone;
+  Location? location;
+  Current? current;
 
   WeatherModel({
-    required this.consolidatedWeather,
-    required this.time,
-    required this.sunRise,
-    required this.sunSet,
-    required this.timezoneName,
-    required this.parent,
-    required this.sources,
-    required this.title,
-    required this.locationType,
-    required this.woeid,
-    required this.lattLong,
-    required this.timezone,
+    this.location,
+    this.current,
   });
 
-  factory WeatherModel.fromJson(Map<String, dynamic> json) {
-    return WeatherModel(
-      consolidatedWeather: (json['consolidated_weather'] as List)
-          .map((x) => ConsolidatedWeather.fromJson(x))
-          .toList(),
-      time: DateTime.parse(json['time']),
-      sunRise: DateTime.parse(json['sun_rise']),
-      sunSet: DateTime.parse(json['sun_set']),
-      timezoneName: json['timezone_name'],
-      parent: Parent.fromJson(json['parent']),
-      sources: json['sources'],
-      title: json['title'],
-      locationType: json['location_type'],
-      woeid: json['woeid'],
-      lattLong: json['latt_long'],
-      timezone: json['timezone'],
-    );
-  }
+  factory WeatherModel.fromJson(Map<String, dynamic> json) => WeatherModel(
+    location: json["location"] == null
+        ? null
+        : Location.fromJson(json["location"]),
+    current:
+    json["current"] == null ? null : Current.fromJson(json["current"]),
+  );
 
-  Map<String, dynamic> toJson() {
-    return {
-      'consolidated_weather':
-      consolidatedWeather.map((x) => x.toJson()).toList(),
-      'time': time.toIso8601String(),
-      'sun_rise': sunRise.toIso8601String(),
-      'sun_set': sunSet.toIso8601String(),
-      'timezone_name': timezoneName,
-      'parent': parent.toJson(),
-      'sources': sources,
-      'title': title,
-      'location_type': locationType,
-      'woeid': woeid,
-      'latt_long': lattLong,
-      'timezone': timezone,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    "location": location?.toJson(),
+    "current": current?.toJson(),
+  };
 }
 
-class ConsolidatedWeather {
-  final int id;
-  final String weatherStateName;
-  final String weatherStateAbbr;
-  final String windDirectionCompass;
-  final DateTime created;
-  final DateTime applicableDate;
-  final double minTemp;
-  final double maxTemp;
-  final double theTemp;
-  final double windSpeed;
-  final double windDirection;
-  final double airPressure;
-  final int humidity;
-  final double visibility;
-  final int predictability;
+class Current {
+  int? lastUpdatedEpoch;
+  String? lastUpdated;
+  double? tempC;
+  int? isDay;
+  Condition? condition;
+  double? windMph;
+  double? windKph;
+  double? windDegree;
+  String? windDir;
+  double? pressureMb;
+  double? pressureIn;
+  double? precipMm;
+  double? precipIn;
+  double? humidity;
+  double? cloud;
+  double? feelslikeC;
+  double? feelslikeF;
+  double? windchillC;
+  double? windchillF;
+  double? heatindexC;
+  double? heatindexF;
+  double? uv;
+  Map<String, double>? airQuality;
 
-  ConsolidatedWeather({
-    required this.id,
-    required this.weatherStateName,
-    required this.weatherStateAbbr,
-    required this.windDirectionCompass,
-    required this.created,
-    required this.applicableDate,
-    required this.minTemp,
-    required this.maxTemp,
-    required this.theTemp,
-    required this.windSpeed,
-    required this.windDirection,
-    required this.airPressure,
-    required this.humidity,
-    required this.visibility,
-    required this.predictability,
+  Current({
+    this.lastUpdatedEpoch,
+    this.lastUpdated,
+    this.tempC,
+    this.isDay,
+    this.condition,
+    this.windMph,
+    this.windKph,
+    this.windDegree,
+    this.windDir,
+    this.pressureMb,
+    this.pressureIn,
+    this.precipMm,
+    this.precipIn,
+    this.humidity,
+    this.cloud,
+    this.feelslikeC,
+    this.feelslikeF,
+    this.windchillC,
+    this.windchillF,
+    this.heatindexC,
+    this.heatindexF,
+    this.uv,
+    this.airQuality,
   });
 
-  factory ConsolidatedWeather.fromJson(Map<String, dynamic> json) {
-    return ConsolidatedWeather(
-      id: json['id'],
-      weatherStateName: json['weather_state_name'],
-      weatherStateAbbr: json['weather_state_abbr'],
-      windDirectionCompass: json['wind_direction_compass'],
-      created: DateTime.parse(json['created']),
-      applicableDate: DateTime.parse(json['applicable_date']),
-      minTemp: json['min_temp'].toDouble(),
-      maxTemp: json['max_temp'].toDouble(),
-      theTemp: json['the_temp'].toDouble(),
-      windSpeed: json['wind_speed'].toDouble(),
-      windDirection: json['wind_direction'].toDouble(),
-      airPressure: json['air_pressure'].toDouble(),
-      humidity: json['humidity'],
-      visibility: json['visibility'].toDouble(),
-      predictability: json['predictability'],
-    );
-  }
+  factory Current.fromJson(Map<String, dynamic> json) => Current(
+    lastUpdatedEpoch: (json["last_updated_epoch"] as num?)?.toInt(),
+    lastUpdated: json["last_updated"],
+    tempC: (json["temp_c"] as num?)?.toDouble(),
+    isDay: json["is_day"],
+    condition: json["condition"] == null
+        ? null
+        : Condition.fromJson(json["condition"]),
+    windMph: (json["wind_mph"] as num?)?.toDouble(),
+    windKph: (json["wind_kph"] as num?)?.toDouble(),
+    windDegree: (json["wind_degree"] as num?)?.toDouble(),
+    windDir: json["wind_dir"],
+    pressureMb: (json["pressure_mb"] as num?)?.toDouble(),
+    pressureIn: (json["pressure_in"] as num?)?.toDouble(),
+    precipMm: (json["precip_mm"] as num?)?.toDouble(),
+    precipIn: (json["precip_in"] as num?)?.toDouble(),
+    humidity: (json["humidity"] as num?)?.toDouble(),
+    cloud: (json["cloud"] as num?)?.toDouble(),
+    feelslikeC: (json["feelslike_c"] as num?)?.toDouble(),
+    feelslikeF: (json["feelslike_f"] as num?)?.toDouble(),
+    windchillC: (json["windchill_c"] as num?)?.toDouble(),
+    windchillF: (json["windchill_f"] as num?)?.toDouble(),
+    heatindexC: (json["heatindex_c"] as num?)?.toDouble(),
+    heatindexF: (json["heatindex_f"] as num?)?.toDouble(),
+    uv: (json["uv"] as num?)?.toDouble(),
+    airQuality: json["air_quality"] == null
+        ? null
+        : Map.from(json["air_quality"])
+        .map((k, v) => MapEntry<String, double>(k, (v as num).toDouble())),
+  );
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'weather_state_name': weatherStateName,
-      'weather_state_abbr': weatherStateAbbr,
-      'wind_direction_compass': windDirectionCompass,
-      'created': created.toIso8601String(),
-      'applicable_date': applicableDate.toIso8601String(),
-      'min_temp': minTemp,
-      'max_temp': maxTemp,
-      'the_temp': theTemp,
-      'wind_speed': windSpeed,
-      'wind_direction': windDirection,
-      'air_pressure': airPressure,
-      'humidity': humidity,
-      'visibility': visibility,
-      'predictability': predictability,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    "last_updated_epoch": lastUpdatedEpoch,
+    "last_updated": lastUpdated,
+    "temp_c": tempC,
+    "is_day": isDay,
+    "condition": condition?.toJson(),
+    "wind_mph": windMph,
+    "wind_kph": windKph,
+    "wind_degree": windDegree,
+    "wind_dir": windDir,
+    "pressure_mb": pressureMb,
+    "pressure_in": pressureIn,
+    "precip_mm": precipMm,
+    "precip_in": precipIn,
+    "humidity": humidity,
+    "cloud": cloud,
+    "feelslike_c": feelslikeC,
+    "feelslike_f": feelslikeF,
+    "windchill_c": windchillC,
+    "windchill_f": windchillF,
+    "heatindex_c": heatindexC,
+    "heatindex_f": heatindexF,
+    "uv": uv,
+    "air_quality": airQuality == null
+        ? null
+        : Map.from(airQuality!)
+        .map((k, v) => MapEntry<String, dynamic>(k, v)),
+  };
 }
 
-class Parent {
-  final String title;
-  final String locationType;
-  final int woeid;
-  final String lattLong;
+class Condition {
+  String? text;
+  String? icon;
+  int? code;
 
-  Parent({
-    required this.title,
-    required this.locationType,
-    required this.woeid,
-    required this.lattLong,
+  Condition({
+    this.text,
+    this.icon,
+    this.code,
   });
 
-  factory Parent.fromJson(Map<String, dynamic> json) {
-    return Parent(
-      title: json['title'],
-      locationType: json['location_type'],
-      woeid: json['woeid'],
-      lattLong: json['latt_long'],
-    );
-  }
+  factory Condition.fromJson(Map<String, dynamic> json) => Condition(
+    text: json["text"],
+    icon: json["icon"],
+    code: json["code"],
+  );
 
-  Map<String, dynamic> toJson() {
-    return {
-      'title': title,
-      'location_type': locationType,
-      'woeid': woeid,
-      'latt_long': lattLong,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    "text": text,
+    "icon": icon,
+    "code": code,
+  };
+}
+
+class Location {
+  String? name;
+  String? region;
+  String? country;
+  double? lat;
+  double? lon;
+  String? tzId;
+  double? localtimeEpoch;
+  String? localtime;
+
+  Location({
+    this.name,
+    this.region,
+    this.country,
+    this.lat,
+    this.lon,
+    this.tzId,
+    this.localtimeEpoch,
+    this.localtime,
+  });
+
+  factory Location.fromJson(Map<String, dynamic> json) => Location(
+    name: json["name"],
+    region: json["region"],
+    country: json["country"],
+    lat: (json["lat"] as num?)?.toDouble(),
+    lon: (json["lon"] as num?)?.toDouble(),
+    tzId: json["tz_id"],
+    localtimeEpoch: (json["localtime_epoch"] as num?)?.toDouble(),
+    localtime: json["localtime"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "name": name,
+    "region": region,
+    "country": country,
+    "lat": lat,
+    "lon": lon,
+    "tz_id": tzId,
+    "localtime_epoch": localtimeEpoch,
+    "localtime": localtime,
+  };
 }
