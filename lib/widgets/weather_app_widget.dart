@@ -42,7 +42,7 @@ class WeatherApp extends StatelessWidget {
       body: BlocBuilder<WeatherBloc, WeatherState>(
         builder: (context, state) {
           if (state is WeatherInitial) {
-            return const Center(child: Text('Please Choose a City'));
+            return const Center(child: Text('Please Choose A City',style: TextStyle(fontSize: 30, color: Colors.blue),));
           } else if (state is WeatherLoadingState) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is WeatherLoadedState) {

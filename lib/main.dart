@@ -7,7 +7,10 @@ import 'package:flutter_weather_with_bloc/widgets/weather_app_widget.dart';
 import 'blocs_weather/weather_bloc.dart';
 
 void main() {
+  // Initialize service locator (Dependency Injection)
   setupLocator();
+
+  // Run the app with ThemaBloc as the root provider
   runApp(BlocProvider<ThemaBloc>(
     create: (context) => ThemaBloc(),
     child: MyApp(),
@@ -26,26 +29,24 @@ class MyApp extends StatelessWidget {
           title: 'Weather App',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-              appBarTheme:
-                  AppBarTheme(color: (state as ThemaInitial).materialColor),
-              textTheme: TextTheme(
-                  displayMedium:
-                      TextStyle(color: (state as ThemaInitial).materialColor),
-                /*  bodyLarge:
-                TextStyle(color: (state as ThemaInitial).materialColor),
-                bodyMedium:
-                TextStyle(color: (state as ThemaInitial).materialColor),
-               bodySmall:
-                TextStyle(color: (state as ThemaInitial).materialColor),*/
-
+            appBarTheme: AppBarTheme(
+              color: (state as ThemaInitial).materialColor, // Set AppBar color dynamically
+            ),
+            textTheme: TextTheme(
+              displayMedium: TextStyle(
+                color: (state as ThemaInitial).materialColor, // Set text color dynamically
               ),
-          ),
-          //   (state as ThemaInitial).,
+              /*
+              Uncomment the following lines to apply the same dynamic theme to other text styles:
 
-          /*ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-          ),*/
+              bodyLarge: TextStyle(color: (state as ThemaInitial).materialColor),
+              bodyMedium: TextStyle(color: (state as ThemaInitial).materialColor),
+              bodySmall: TextStyle(color: (state as ThemaInitial).materialColor),
+              */
+            ),
+          ),
+
+          // Provide WeatherBloc to the WeatherApp widget
           home: BlocProvider(
             create: (context) => WeatherBloc(),
             child: WeatherApp(),
